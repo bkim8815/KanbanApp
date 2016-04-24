@@ -1,11 +1,12 @@
 const path = require('path');
 const merge = require('webpack-merge');
+const webpack = require('webpack');
+const NpmInstallPlugin = require('npm-install-webpack-plugin');
 
 
 const TARGET = process.env.npm_lifecycle_event;
 
 
-const webpack = require('webpack');
 
 const PATHS = {
   app: path.join(__dirname, 'app'),
@@ -43,6 +44,7 @@ const common = {
 if(TARGET === 'start' || !TARGET) {
 
   module.exports = merge(common, {
+    devtool: 'eval-source-map',
     devServer: {
       contentBase: PATHS.build,
 
@@ -68,7 +70,11 @@ if(TARGET === 'start' || !TARGET) {
       port: process.env.PORT
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin()
+
+      new webpack.HotModuleReplacementPlugin(),
+      new NpmInstallPlugin({
+        save: true // --save
+        })
     ]
   });
 
